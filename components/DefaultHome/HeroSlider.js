@@ -1,13 +1,32 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
-// Quitamos OwlCarousel porque NO existe y causa error
+// ModalVideo queda cargado por si lo requieres después
 const ModalVideo = dynamic(() => import('react-modal-video'), {
     ssr: false
 });
 
 const HeroSlider = () => {
+
+    // Control del video
+    const videoRef = useRef(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const togglePlay = () => {
+        const video = videoRef.current;
+
+        if (!video) return;
+
+        if (video.paused) {
+            video.play();
+            setIsPlaying(true);
+        } else {
+            video.pause();
+            setIsPlaying(false);
+        }
+    };
+
     return (
         <React.Fragment>
             <div className="hero-slider-area">
@@ -19,6 +38,7 @@ const HeroSlider = () => {
                                 <div className="row align-items-center">
                                     <div className="col-lg-9">
                                         <div className="slider-text two">
+
                                             <h2
                                                 style={{
                                                     fontFamily: 'Montserrat, sans-serif',
@@ -45,11 +65,12 @@ const HeroSlider = () => {
                                                 CAPITAL HUMANO
                                             </p>
 
-                                            {/* Botón + Video */}
+                                            {/* BOTONES */}
                                             <div
                                                 className="slider-btn d-flex align-items-center gap-4 mt-4"
                                                 style={{ flexWrap: 'wrap' }}
                                             >
+                                                {/* BOTÓN DE REGISTRO */}
                                                 <Link
                                                     href="https://share.hsforms.com/1HupIgxJyRuK3lu6qDPtB7gq5t92"
                                                     target="_blank"
@@ -61,7 +82,7 @@ const HeroSlider = () => {
                                                     </Link>
                                                 </Link>
 
-                                                {/* VIDEO CON MINIATURA */}
+                                                {/* VIDEO NUEVO CON MINIATURA Y BOTÓN PLAY */}
                                                 <div
                                                     className="video-container"
                                                     style={{
@@ -74,19 +95,11 @@ const HeroSlider = () => {
                                                             '0 4px 15px rgba(0, 0, 0, 0.4)',
                                                         cursor: 'pointer',
                                                     }}
-                                                    onClick={(e) => {
-                                                        const video =
-                                                            e.currentTarget.querySelector('video');
-                                                        if (video.paused) {
-                                                            video.play();
-                                                        } else {
-                                                            video.pause();
-                                                        }
-                                                    }}
+                                                    onClick={togglePlay}
                                                 >
                                                     <video
+                                                        ref={videoRef}
                                                         src="/uploads/video-invitacion.mp4"
-                                                        poster="/uploads/thumbnail-hrweek.png"
                                                         className="w-100 h-100"
                                                         style={{
                                                             objectFit: 'cover',
@@ -96,29 +109,42 @@ const HeroSlider = () => {
                                                         preload="metadata"
                                                     />
 
-                                                    {/* Overlay que aparece hasta que reproducen */}
-                                                    <div
-                                                        className="play-overlay"
-                                                        style={{
-                                                            position: 'absolute',
-                                                            inset: 0,
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            justifyContent: 'center',
-                                                            backgroundColor:
-                                                                'rgba(0, 0, 0, 0.3)',
-                                                            color: '#fff',
-                                                            fontSize: '18px',
-                                                            opacity: 1,
-                                                            transition: 'opacity .3s',
-                                                            pointerEvents: 'none',
-                                                        }}
-                                                    >
-                                                        ▶ Haz clic para reproducir
-                                                    </div>
+                                                    {/* ÍCONO PLAY / PAUSE */}
+                                                    {!isPlaying && (
+                                                        <div
+                                                            style={{
+                                                                position: 'absolute',
+                                                                inset: 0,
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                background:
+                                                                    'rgba(0, 0, 0, 0.25)',
+                                                            }}
+                                                        >
+                                                            <div
+                                                                style={{
+                                                                    width: '65px',
+                                                                    height: '65px',
+                                                                    borderRadius: '50%',
+                                                                    background: 'rgba(0,0,0,0.6)',
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    color: 'white',
+                                                                    fontSize: '28px',
+                                                                    fontWeight: 'bold',
+                                                                }}
+                                                            >
+                                                                ▶
+                                                            </div>
+                                                        </div>
+                                                    )}
+
                                                 </div>
                                             </div>
-                                            {/* FIN VIDEO */}
+                                            {/* FIN BOTONES */}
+
                                         </div>
                                     </div>
                                 </div>
